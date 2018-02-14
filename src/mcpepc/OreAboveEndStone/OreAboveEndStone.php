@@ -101,7 +101,7 @@ class OreAboveEndStone extends PluginBase implements Listener {
 		if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121) {
 			$event->setCancelled();
 			$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), self::getRandomOreBlock());
-			$event->getPlayer()->getInventory()->addItem(self::getMineralFromOre(Item::get($block->getId())));
+			$event->getPlayer()->getInventory()->addItem(self::getMineralFromOre($block->getId()));
 		}
 	}
 }
