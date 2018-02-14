@@ -30,24 +30,24 @@ class OreAboveEndStone extends PluginBase implements Listener {
 		$mineral_id = 4;
 		$mineral_meta = 0;
 		$mineral_count = 1;
-		if ($id === 16) {
+		if ($ore_id === 16) {
 			$mineral_id = 263;
-		} else if ($id === 15) {
+		} else if ($ore_id === 15) {
 			$mineral_id = 265;
-		} else if ($id === 14) {
+		} else if ($ore_id === 14) {
 			$mineral_id = 266;
-		} else if ($id === 21) {
+		} else if ($ore_id === 21) {
 			$mineral_id = 351;
 			$mineral_meta = 4;
 			$mineral_count = mt_rand(1, 4);
-		} else if ($id === 74) {
+		} else if ($ore_id === 74) {
 			$mineral_id = 331;
 			$mineral_count = mt_rand(1, 4);
-		} else if ($id === 56) {
+		} else if ($ore_id === 56) {
 			$mineral_id = 264;
-		} else if ($id === 129) {
+		} else if ($ore_id === 129) {
 			$mineral_id = 388;
-		} else if ($id !== 1) {
+		} else if ($ore_id !== 1) {
 			$mineral_id = $ore_id;
 		}
 		return Item::get($mineral_id, $mineral_meta, $mineral_count);
