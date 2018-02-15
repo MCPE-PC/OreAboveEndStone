@@ -1,6 +1,4 @@
 # OreAboveEndStone
-![OreAboveEndStone icon](https://cdn.rawgit.com/MCPE-PC/OreAboveEndStone/a0adb0bb/favicon.png)
-
 [![](https://poggit.pmmp.io/ci.shield/MCPE-PC/OreAboveEndStone/OreAboveEndStone)](https://poggit.pmmp.io/ci/MCPE-PC/OreAboveEndStone)
 [![](https://poggit.pmmp.io/shield.state/OreAboveEndStone)](https://poggit.pmmp.io/p/OreAboveEndStone)
 [![GitHub issues](https://img.shields.io/github/issues/MCPE-PC/OreAboveEndStone.svg)](https://github.com/MCPE-PC/OreAboveEndStone/issues)
