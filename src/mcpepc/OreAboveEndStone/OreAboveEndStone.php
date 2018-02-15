@@ -26,6 +26,8 @@ use pocketmine\level\Position;
 use pocketmine\plugin\PluginBase;
 
 class OreAboveEndStone extends PluginBase implements Listener {
+	const CONFIG_VERSION = 1;
+	private $enabled = true;
 	public function getMineralFromOre(int $ore_id): Item {
 		$mineral_id = 4;
 		$mineral_meta = 0;
@@ -82,12 +84,9 @@ class OreAboveEndStone extends PluginBase implements Listener {
 		}
 		return Block::get($ore_id);
 	}
-	public function onEnable(): void {
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-	}
 	public function onBlockPlace(BlockPlaceEvent $event): void {
 		$block = $event->getBlock();
-		if (!$event->isCancelled()) {
+		if (!$event->isCancelled() && $this->enabled) {
 			if ($block->getId() === 121) {
 				$block->getLevel()->setBlock(new Position($block->getX(), $block->getY() + 1, $block->getZ(), $block->getLevel()), self::getRandomOreBlock());
 			} else if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121) {
@@ -98,10 +97,43 @@ class OreAboveEndStone extends PluginBase implements Listener {
 	}
 	public function onBlockBreak(BlockBreakEvent $event): void {
 		$block = $event->getBlock();
-		if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121) {
+		if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121 && $this->enabled) {
 			$event->setCancelled(true);
 			$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), self::getRandomOreBlock());
 			$event->getPlayer()->getInventory()->addItem(self::getMineralFromOre($block->getId()));
+		}
+	}
+	public function onDisable(): void {
+		$this->getServer()->getLogger()->info('OreAboveEndStone by MCPE_PC disabled!');
+		$this->getConfig()->save();
+	}
+	public function onEnable(): void {
+		$this->getServer()->getLogger()->info('OreAboveEndStone by MCPE_PC enabled!');
+		if (self::CONFIG_VERSION < $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
+			if (!self::updateConfig()) {
+				$this->getServer()->getLogger()->critical('Not compatible config version: Plugin is old');
+				$this->getServer()->getPluginManager()->disablePlugin($this);
+			}
+		} else if (self::CONFIG_VERSION > $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
+			if (!self::updateConfig()) {
+				$this->getServer()->getLogger()->critical('Not compatible config version: Config is old');
+				$this->getServer()->getPluginManager()->disablePlugin($this);
+			}
+		}
+		$this->enabled = $this->getConfig()->get('enable', true);
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+	}
+	public function onLoad(): void {
+		$this->saveDefaultConfig();
+	}
+	protected function updateConfig(): bool {
+		if (self::CONFIG_VERSION === $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
+			return true;
+		} else if (self::CONFIG_VERSION > $this->getConfig()->get('config-version', self::CONFIG_VERSION) &&  1 <= $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
+			$this->getConfig()->set('config-version', self::CONFIG_VERSION);
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
