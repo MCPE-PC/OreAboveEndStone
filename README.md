@@ -8,10 +8,15 @@
 [![GitHub stars](https://img.shields.io/github/stars/MCPE-PC/OreAboveEndStone.svg)](https://github.com/MCPE-PC/OreAboveEndStone/stargazers)
 [![GitHub license](https://img.shields.io/github/license/MCPE-PC/OreAboveEndStone.svg)](https://github.com/MCPE-PC/OreAboveEndStone/blob/master/LICENSE)
 
-If you place End Stone, ore will appear
-## Usage
+*If you place End Stone, ore will appear*
+
+Easy-to-use and customize-able mining plugin
+## Installation
 1. Download the plugin.
-2. Drop it in your plugins folder.
-3. (Re)Start your server.
-4. Place End Stone at your server.
-5. Enjoy mining!
+2. Check it for code if you think there might be a malware.
+3. Copy it in your server's `plugins` folder.
+4. (Re)Start your server.
+## Usage
+1. Place `End Stone` at your server.
+2. Check there is an ore above it.
+3. If there is an ore, enjoy mining!

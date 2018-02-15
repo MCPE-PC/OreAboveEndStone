@@ -54,6 +54,7 @@ class OreAboveEndStone extends PluginBase implements Listener {
 		}
 		return Item::get($mineral_id, $mineral_meta, $mineral_count);
 	}
+	// TODO: Suppport block and chance customizing
 	public function getRandomOreBlock(): Block {
 		$ore_id = 1;
 		for (;;) {
@@ -109,16 +110,13 @@ class OreAboveEndStone extends PluginBase implements Listener {
 	}
 	public function onEnable(): void {
 		$this->getServer()->getLogger()->info('OreAboveEndStone by MCPE_PC enabled!');
+		self::updateConfig();
 		if (self::CONFIG_VERSION < $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
-			if (!self::updateConfig()) {
-				$this->getServer()->getLogger()->critical('Not compatible config version: Plugin is old');
-				$this->getServer()->getPluginManager()->disablePlugin($this);
-			}
+			$this->getServer()->getLogger()->critical('Not compatible config version: Plugin is old');
+			$this->getServer()->getPluginManager()->disablePlugin($this);
 		} else if (self::CONFIG_VERSION > $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
-			if (!self::updateConfig()) {
-				$this->getServer()->getLogger()->critical('Not compatible config version: Config is old');
-				$this->getServer()->getPluginManager()->disablePlugin($this);
-			}
+			$this->getServer()->getLogger()->critical('Not compatible config version: Config is old');
+			$this->getServer()->getPluginManager()->disablePlugin($this);
 		}
 		$this->enabled = $this->getConfig()->get('enable', true);
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -130,6 +128,7 @@ class OreAboveEndStone extends PluginBase implements Listener {
 		if (self::CONFIG_VERSION === $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
 			return true;
 		} else if (self::CONFIG_VERSION > $this->getConfig()->get('config-version', self::CONFIG_VERSION) &&  1 <= $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
+			$this->saveDefaultConfig();
 			$this->getConfig()->set('config-version', self::CONFIG_VERSION);
 			return true;
 		} else {
