@@ -10,7 +10,7 @@
 
 *If you place End Stone, ore will appear*
 
-Easy-to-use and customize-able mining plugin
+OreAboveEndStone is an easy-to-use and customize-able plugin which allows you to create mines.
 ## Installation
 1. Download the plugin.
 2. Check it for code if you think there might be a malware.

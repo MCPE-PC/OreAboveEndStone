@@ -1,4 +1,8 @@
 # Enable OreAboveEndStone?
 enable: true
-# Do not change this!
+# Available languages: en(English), ko(한국어)
+language: en
+#######################
+# Do not change this! #
+#######################
 config-version: 1
