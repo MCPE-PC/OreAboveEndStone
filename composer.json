@@ -1,0 +1,16 @@
+{
+    "name": "mcpe_pc/oreaboveendstone",
+    "description": "If you place End Stone, ore will appear",
+    "type": "project",
+    "homepage": "https://github.com/MCPE-PC/OreAboveEndStone#readme",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "MCPE_PC",
+            "email": "maxpjh0528@naver.com"
+        }
+    ],
+    "require": {
+        "airbrake/phpbrake": "^0.5"
+    }
+}
