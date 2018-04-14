@@ -10,7 +10,10 @@
             "email": "maxpjh0528@naver.com"
         }
     ],
-    "require": {
-        "airbrake/phpbrake": "^0.5"
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "OreAboveEndStone\\": "src/"
+        }
     }
 }
