@@ -4,12 +4,13 @@ description: If you place End Stone, ore will appear
 author: MCPE_PC
 website: https://github.com/MCPE-PC/OreAboveEndStone#readme
 main: mcpepc\OreAboveEndStone\OreAboveEndStone
-softdepend:
-- SimpleArea
+# softdepend:
+# - SimpleArea
 api:
 - 3.0.0-ALPHA7
 - 3.0.0-ALPHA8
 - 3.0.0-ALPHA9
 - 3.0.0-ALPHA10
 - 3.0.0-ALPHA11
+- 3.0.0-ALPHA12
 - 3.0.0-dev
