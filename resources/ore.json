@@ -4,8 +4,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 2,
-      "exp": "=== 1"
+      "max": 2
     }
   },
   {
@@ -13,8 +12,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 5,
-      "exp": "=== 1"
+      "max": 5
     }
   },
   {
@@ -22,8 +20,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 10,
-      "exp": "=== 1"
+      "max": 10
     }
   },
   {
@@ -40,8 +37,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 20,
-      "exp": "=== 1"
+      "max": 20
     }
   },
   {
@@ -49,8 +45,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 20,
-      "exp": "=== 1"
+      "max": 20
     }
   },
   {
@@ -58,8 +53,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 100,
-      "exp": "=== 1"
+      "max": 100
     }
   },
   {
@@ -67,8 +61,7 @@
     "damage": 0,
     "chance": {
       "min": 1,
-      "max": 100,
-      "exp": "=== 1"
+      "max": 100
     }
   }
 ]

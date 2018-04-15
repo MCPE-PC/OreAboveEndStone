@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @author MCPE_PC <maxpjh0528@naver.com> (https://www.mcpepc.ml)
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -28,99 +29,75 @@ use pocketmine\utils\Config;
 
 class OreAboveEndStone extends PluginBase implements Listener {
 	const CONFIG_VERSION = 1;
-	private $code = '';
 	private $enabled = true;
-	protected $language = [];
-	public function getMineralFromOre(int $ore_id): Item {
-		$mineral_id = 4;
-		$mineral_damage = 0;
-		$mineral_count = 1;
-		if ($ore_id === 16) {
-			$mineral_id = 263;
-		} else if ($ore_id === 15) {
-			$mineral_id = 265;
-		} else if ($ore_id === 14) {
-			$mineral_id = 266;
-		} else if ($ore_id === 21) {
-			$mineral_id = 351;
-			$mineral_damage = 4;
-			$mineral_count = mt_rand(1, 4);
-		} else if ($ore_id === 74) {
-			$mineral_id = 331;
-			$mineral_count = mt_rand(1, 4);
-		} else if ($ore_id === 56) {
-			$mineral_id = 264;
-		} else if ($ore_id === 129) {
-			$mineral_id = 388;
-		} else if ($ore_id !== 1) {
-			$mineral_id = $ore_id;
-		}
-		return Item::get($mineral_id, $mineral_damage, $mineral_count);
+	private static $instance = null;
+	protected $lang;
+	private $notifier;
+	static function getInstance(): self {
+		return static::$instance;
 	}
-	// TODO: Suppport block and chance customizing
-	public function getRandomOre(): Block {
-		$ore_id = 1;
-		$ore_damage = 0;
-		eval($this->code);
-		return Block::get($ore_id, $ore_damage);
+	function getLanguage(): OreAboveEndStoneLang {
+		return $this->lang;
 	}
-	public function onBlockPlace(BlockPlaceEvent $event): void {
+	function getMessage(string $key, array $replaces = ['plugin' => 'OreAboveEndStone', 'author' => 'MCPE_PC']): string {
+		return OreAboveEndStoneAPI::replace($this->getLanguage()->get($key), $replaces);
+	}
+	/**
+	 * @ignoreCancelled
+	*/
+	function onBlockPlace(BlockPlaceEvent $event): void {
 		$block = $event->getBlock();
-		if (!$event->isCancelled() && $this->enabled) {
+		if ($this->enabled) {
 			if ($block->getId() === 121) {
-				$block->getLevel()->setBlock(new Position($block->getX(), $block->getY() + 1, $block->getZ(), $block->getLevel()), self::getRandomOre());
+				$block->getLevel()->setBlock(new Position($block->getX(), $block->getY() + 1, $block->getZ(), $block->getLevel()), OreAboveEndStoneAPI::getRandomOre());
 			} else if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121) {
-				$event->setCancelled(true);
-				$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), self::getRandomOre());
+				$event->setCancelled();
+				$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), OreAboveEndStoneAPI::getRandomOre());
 			}
 		}
 	}
-	public function onBlockBreak(BlockBreakEvent $event): void {
+	function onBlockBreak(BlockBreakEvent $event): void {
 		$block = $event->getBlock();
 		if ($block->getLevel()->getBlock(new Position($block->getX(), $block->getY() - 1, $block->getZ(), $block->getLevel()))->getId() === 121 && $this->enabled) {
-			$event->setCancelled(true);
-			$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), self::getRandomOre());
-			$event->getPlayer()->getInventory()->addItem(self::getMineralFromOre($block->getId()));
+			$event->setCancelled();
+			$block->getLevel()->setBlock(new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel()), OreAboveEndStoneAPI::getRandomOre());
+			$event->getPlayer()->getInventory()->addItem(OreAboveEndStoneAPI::getMineralFromOre($block->getId()));
 		}
 	}
-	public function onDisable(): void {
-		$this->getServer()->getLogger()->info(self::repl($this->language['plugin-disabled']));
+	function onDisable(): void {
+		OreAboveEndStoneLogger::getLogger()->info($this->getMessage('plugin-disabled'));
 		$this->getConfig()->save();
 	}
-	public function onEnable(): void {
-		$this->getServer()->getLogger()->info(self::repl($this->language['plugin-enabled']));
-		self::updateConfig();
+	function onEnable(): void {
+		$this->updateConfig();
 		if (self::CONFIG_VERSION < $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
-			$this->getServer()->getLogger()->critical(self::repl($this->language['incompatible-config'], ['reason' => $this->language['old-config']]));
+			OreAboveEndStoneLogger::getLogger()->critical($this->getMessage('incompatible-config', ['reason' => $this->getLanguage()->get('old-config')]));
 			$this->getServer()->getPluginManager()->disablePlugin($this);
 		} else if (self::CONFIG_VERSION > $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
-			$this->getServer()->getLogger()->critical(self::repl($this->language['incompatible-config'], ['reason' => $this->language['old-plugin']]));
+			OreAboveEndStoneLogger::getLogger()->critical($this->getMessage('incompatible-config', ['reason' => $this->getLanguage()->get('old-plugin')]));
 			$this->getServer()->getPluginManager()->disablePlugin($this);
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		OreAboveEndStoneLogger::getLogger()->info($this->getMessage('plugin-enabled'));
 	}
-	public function onLoad(): void {
+	function onLoad(): void {
+		include_once($this->getFile() . 'vendor/autoload.php');
 		$this->saveDefaultConfig();
 		$this->saveResource('ore.json');
-		$ore_json = json_decode(file_get_contents($this->getDataFolder() . 'ore.json'), true);
-		foreach ($ore_json as $data) {
-			$exp = isset($data['chance']['exp']) ? explode(' ', $data['chance']['exp']) : ['===', '1'];
-			$this->code .= ($this->code === '' ? '' : ' else ') . 'if (mt_rand(' . $data['chance']['min'] . ', ' . $data['chance']['max'] . ') ' . $exp[0] . ' ' . $exp[1] . ') {$ore_id = ' . $data['id'] . ';$ore_damage = ' . $data['damage'] . ';break;}';
-		}
-		$this->code = 'for (;;) {' . $this->code . '}';
+		$this->registerStatic();
+		(new OreAboveEndStoneAPI)->registerStatic();
+		(new OreAboveEndStoneLogger)->registerStatic();
 		$this->enabled = $this->getConfig()->get('enable');
-		$this->language = (new Config($this->getFile() . 'resources/lang_' . $this->getConfig()->get('language', 'en') . '.properties', Config::PROPERTIES, (new Config($this->getFile() . 'resources/lang_en.properties', Config::PROPERTIES))->getAll()))->getAll();
+		$this->lang = new OreAboveEndStoneLang($this->getServer()->getProperty('settings.language'), $this->getFile() . 'resources/');
 	}
-	public function repl(string $subject, array $vars = ['plugin' => 'OreAboveEndStone', 'author' => 'MCPE_PC']): string {
-		$result = $subject;
-		foreach ($vars as $search => $replace) {
-			$result = str_replace('{' . $search . '}', $replace, $result);
+	function registerStatic() {
+		if (static::$instance === null) {
+			static::$instance = $this;
 		}
-		return $result;
 	}
 	protected function updateConfig(): bool {
 		if (self::CONFIG_VERSION >= $this->getConfig()->get('config-version', self::CONFIG_VERSION) &&  1 <= $this->getConfig()->get('config-version', self::CONFIG_VERSION)) {
-			$this->getConfig()->setAll(array_merge((new Config($this->getFile() . 'resources/config.yml', Config::YAML))->getAll(), $this->getConfig()->getAll()));
+			$this->getConfig()->setAll(\array_merge((new Config($this->getFile() . 'resources/config.yml', Config::YAML))->getAll(), $this->getConfig()->getAll()));
 			$this->getConfig()->set('config-version', self::CONFIG_VERSION);
 			return true;
 		} else {
